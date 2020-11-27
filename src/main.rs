@@ -1,37 +1,36 @@
+use rayon::prelude::*;
 use std::net::{IpAddr, TcpStream};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
 struct Cli {
     /// The ip to scan
-    #[structopt(
-        long = "target-ip",
-        help = "ip of the target",
-        default_value = "127.0.0.1"
-    )]
+    #[structopt(long = "target-ip", help = "ip of the target")]
     ip: String,
 }
 
 fn parse_address(address: &str) -> IpAddr {
     return address.parse::<IpAddr>().expect("not a valid ip address");
 }
-fn scan(addr: IpAddr, port: u16) {
+fn scan(addr: IpAddr, port: u16) -> bool {
     match TcpStream::connect((addr, port)) {
-        Ok(_) => {
-            // Found open port, indicate progress and send to main thread
-            println!("port {} open", port);
-        }
-        Err(_) => {
-            //  println!("{} closed", port);
-        }
+        Ok(_) => true,
+        Err(_) => false,
     }
 }
 
 fn main() {
     let args = Cli::from_args();
     let host_ip = parse_address(&args.ip);
-    println!("{}", host_ip);
-    for x in 0..65535 {
-        scan(host_ip, x)
+    println!("scanning {}", host_ip);
+    let ports = (1..65535).into_par_iter();
+    let open_ports: Vec<bool> = ports
+        .map(|port| scan(host_ip, port as u16))
+        .filter_map(|x| Some(x))
+        .collect();
+    for (i, x) in open_ports.iter().enumerate() {
+        if *x {
+            println!("open port {:?}", i + 1);
+        }
     }
 }

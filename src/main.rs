@@ -1,3 +1,5 @@
+use indicatif::ParallelProgressIterator;
+use rayon::iter::ParallelIterator;
 use rayon::prelude::*;
 use std::net::{IpAddr, TcpStream};
 use structopt::StructOpt;
@@ -25,6 +27,7 @@ fn main() {
     println!("scanning {}", host_ip);
     let ports = (1..65535).into_par_iter();
     let open_ports: Vec<bool> = ports
+        .progress()
         .map(|port| scan(host_ip, port as u16))
         .filter_map(|x| Some(x))
         .collect();

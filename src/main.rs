@@ -34,3 +34,10 @@ fn main() {
         }
     }
 }
+
+#[test]
+#[should_panic(expected = "not a valid ip address: AddrParseError(())")]
+fn test_parse_address() {
+    parse_address(&String::from("1.1.1.1"));
+    parse_address(&String::from("1.1.1."));
+}

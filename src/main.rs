@@ -2,6 +2,7 @@ use indicatif::ParallelProgressIterator;
 use rayon::iter::ParallelIterator;
 use rayon::prelude::*;
 use std::net::{IpAddr, TcpStream};
+use std::time::Instant;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -22,6 +23,7 @@ fn scan(addr: IpAddr, port: u16) -> bool {
 }
 
 fn main() {
+    let start = Instant::now();
     let args = Cli::from_args();
     let host_ip = parse_address(&args.ip);
     println!("scanning {}", host_ip);
@@ -36,6 +38,8 @@ fn main() {
             println!("open port {:?}", i + 1);
         }
     }
+    let duration = start.elapsed();
+    println!("scanned host in {:?}", duration);
 }
 
 #[cfg(test)]

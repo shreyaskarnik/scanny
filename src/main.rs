@@ -50,7 +50,7 @@ mod tests {
         parse_address(&String::from("1.1.1.1"));
     }
     #[test]
-    #[should_panic(expected = "not a valid ip address: AddrParseError(())")]
+    #[should_panic(expected = "not a valid ip address: AddrParseError(Ip)")]
     fn test_parse_address_fail() {
         parse_address(&String::from("1.1.1."));
     }

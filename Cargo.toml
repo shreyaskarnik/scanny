@@ -9,4 +9,4 @@ edition = "2021"
 [dependencies]
 structopt = "0.3"
 rayon = "1.5.3"
-indicatif = {version = "*", features = ["rayon"]}
+indicatif = { version = "0.17.2", features = ["rayon"] }

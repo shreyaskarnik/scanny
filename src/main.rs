@@ -11,7 +11,7 @@ struct Cli {
 }
 
 fn parse_address(address: &str) -> IpAddr {
-    return address.parse::<IpAddr>().expect("not a valid ip address");
+    address.parse::<IpAddr>().expect("not a valid ip address")
 }
 fn scan(addr: IpAddr, port: u16) -> bool {
     TcpStream::connect((addr, port)).is_ok()
